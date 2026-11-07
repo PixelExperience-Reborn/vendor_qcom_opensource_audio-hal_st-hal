@@ -60,6 +60,22 @@ AOSP17 core audio is separately AIDL-based. The Sony-hosted Qualcomm primary sta
 4. Test Voice Call/Camcorder/VOIP/AudioRecord concurrency, recognition resource contention and wakeup, hotword capture buffers, crash/SSR recovery, ADSP suspend/power, thermal, screen-off privacy, microphone indicators and permission-enforcement. Android17 Audio Managed SCO may affect Bluetooth telephony routing. Device speaker/mics and always-on detection require real measurement.
 5. Keep the PE-Reborn ROM independent. LF52406 LineageOS 24 device trees may only supply exceptional read-only hardware facts. No copying the complete Lineage device/product audio configuration or assuming Qualcomm AOSP Sony BSP is a Xiaomi product tree.
 
+## Confirmed CI result — real newer Qualcomm source reproduction
+
+[GitHub Actions #42327531250](https://github.com/PixelExperience-Reborn/vendor_qcom_opensource_audio-hal_st-hal/actions/runs/42327531250) completed **SUCCESS** after correcting the checker's expectation for an unquoted NDK module name in Qualcomm's actual `Android.mk`.
+
+This single job verified:
+- **Nine exact source commit/tree pairs:** 2023 old GCS/LSM ST, 2024 PAL legacy ST, six Qualcomm-derived `AUDIO.LA.10.0.r1` modern components, and the active PE AOSP17 `hardware/interfaces` owner;
+- Modern PAL-backed `android.hardware.soundtrigger3` **AIDL V1** factory, exact `ISoundTriggerHw/default` VINTF, dynamic `createISoundTriggerFactory()`/NDK Binder, and **Android17 Core V3/Effects V4** primary source;
+- The selected AOSP17 SoundTrigger AIDL remains **frozen V1 through V4**; no HIDL/legacy module is substituted;
+- **All 25 active AOSP17 source profiles**, modern six-project candidate remote and immutable pins; **48/48 adversarial and positive tests PASS**;
+- **Real official `repo manifest`** of the experimental candidate: **1075 selected unique source paths** (1069 active + 6 new), no duplicate checkout/legacy STHAL, unchanged active PE `hardware/interfaces` and `frameworks/av` source owners;
+- **Real targeted `repo sync`** of `vendor/qcom/opensource/audio-hal/st-hal-ar` and `primary-hal-ar`, exact modern ST and primary commits + Git tree hashes, AIDL ST V1 and Android17 primary Core V3 source.
+
+The six source snapshots were independently retrieved by Git for SHA/tree comparisons; the targeted `repo sync` was **only two of six repositories**, not a full AudioReach or Android17 tree checkout. **This verifies source reproducibility, not source compatibility or a ROM build.** In particular, the newer Qualcomm-derived AIDL V1 HAL is not automatically compatible with the AOSP17 V4 interface, `taro` sample policy is old, audio HAL service factory config is not deployed, and Xiaomi DSP/firmware/codec/ADSP ABI are not known.
+
+The manifest repository also contains a dedicated [Qualcomm candidate workflow](https://github.com/PixelExperience-Reborn/manifest/blob/port/a17-aosp17-manifest-20261102/.github/workflows/aosp17-p2-qcom-audio-aidl-candidate.yml) to guard later candidate revisions. Its result must be inspected separately; the SUCCESS above is from the isolated historical audit repository.
+
 ## GitHub/CI scope
 
 An isolated historical audit branch contains a deterministic test of immutable old C/old PAL/new AIDL/modern primary/PAL/AGM/graphservice/config/PE AOSP17 interface sources. The manifest working branch contains a **source-only six-repo candidate** at `aosp17_pe_p2_qcom_audio_aidl_candidate.xml`. Exact project identities/SHAs, one Sony-hosted remote and 25 unchanged active stages are enforced, along with four adversarial tests against the old C checkout or premature promotion.
