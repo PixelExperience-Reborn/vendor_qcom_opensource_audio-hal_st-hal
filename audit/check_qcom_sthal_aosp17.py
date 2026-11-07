@@ -163,7 +163,6 @@ def newest_qualcomm(st, primary, pal, agm, graph, conf):
     for token in (
         "LOCAL_MODULE               := libsoundtriggerhal.qti",
         "LOCAL_VINTF_FRAGMENTS      := configs/soundtrigger.qti.xml",
-        '"android.hardware.soundtrigger3-V1-ndk"',
         "android.hardware.soundtrigger3-V1-ndk",
         "libar-pal",
         "src/soundtriggerhw/Service.cpp",
